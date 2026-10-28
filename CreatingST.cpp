@@ -46,7 +46,26 @@ public:
     {
         return rangeSum(q, j, 0, n - 1, 0);
     }
+    void updateHelper(int idx, int newVal, int st, int end, int node){
+        if(st == end){
+            tree[node] = newVal;
+            return;
+        }
+        int mid = st + (end - st) / 2;
 
+        if(idx >= st && idx <= mid){
+            //left
+            updateHelper(idx, newVal, st, mid, 2*node+1);
+        }else{
+            //right
+            updateHelper(idx, newVal, mid+1, end, 2*node+2);
+        }
+
+        tree[node] = tree[2*node+1] + tree[2*node+2];
+    }
+    void updateQuery(int idx, int newVal){
+        updateHelper(idx, newVal, 0, n-1, 0);
+    }
     void printTree()
     {
         for (int i = 0; i < tree.size(); i++)
@@ -65,5 +84,9 @@ int main()
     cout << st.rangeQuery(0, 5) << endl;
     cout << st.rangeQuery(0, 3) << endl;
     cout << st.rangeQuery(6, 7) << endl;
+
+    st.updateQuery(1, 3);
+    cout << st.rangeQuery(0, 3) << endl;
+
     return 0;
 }

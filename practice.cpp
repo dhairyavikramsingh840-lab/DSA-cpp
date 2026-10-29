@@ -1,37 +1,41 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-class Node
-{
-public:
-    int data;
-    Node *left;
-    Node *right;
+class SegmentTree {
+    vector<int> tree;
+    int n;
 
-    Node(int data)
-    {
-        this->data = data;
-        left = right = NULL;
+public:
+    SegmentTree(vector<int> nums){
+        n = nums.size();
+        tree.resize(4*n);
+        buildTree(nums, 0, n-1, 0);
+    }
+    void buildTree(vector<int> &nums, int st, int end, int node){
+
+        if(st == end){
+            tree[node] = nums[st];
+            return;
+        }
+        int mid = st + (end- st) / 2;
+
+        buildTree(nums, st, mid, 2*node+1);
+        buildTree(nums, mid+1, end, 2*node+2);
+
+        tree[node] = max(tree[2*node+1], tree[2*node+2]);
+    }
+    void print(){
+        for(auto it : tree){
+            cout << it << " ";
+        }
+        cout << endl;
     }
 };
-static int idx = -1;
-Node* buildTree(vector<int> nodes)
-{
-    if(nodes[idx] == -1){
-        return NULL;
-    }
-    idx++;
-    Node *CurrNode = new Node(nodes[idx]);
-
-    CurrNode->left = buildTree(nodes);
-    CurrNode->right = buildTree(nodes);
-
-    return CurrNode;
-}
 int main()
 {
-    vector<int> nodes = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
-   Node* root =  buildTree(nodes);
-   cout << root->data;
+    vector<int> arr = {6, 8, -1, 2, 17, 1, 3, 2, 4};
+
+    SegmentTree st(arr);
+    st.print();
     return 0;
 }
